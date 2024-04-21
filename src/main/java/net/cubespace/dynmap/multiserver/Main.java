@@ -84,7 +84,7 @@ public class Main {
         }
 
         //Start up the Webserver
-        HTTPServer httpServer = new HTTPServer(config);
+        Thread httpServer = new Thread(new HTTPServer(config));
         httpServer.start();
     }
 

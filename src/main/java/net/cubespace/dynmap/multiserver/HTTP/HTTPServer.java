@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
-public class HTTPServer extends Thread {
+public class HTTPServer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServer.class);
     private final String ip;
     private final int port;
@@ -25,6 +25,7 @@ public class HTTPServer extends Thread {
         this.config = config;
     }
 
+    @Override
     public void run() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup(workerThreads);
