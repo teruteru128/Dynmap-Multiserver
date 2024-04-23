@@ -1,18 +1,12 @@
 package net.cubespace.dynmap.multiserver.Config;
 
-
-import net.cubespace.Yamler.Config.YamlConfig;
-
-import java.io.File;
 import java.util.ArrayList;
 
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
-public class Main extends YamlConfig {
+public class Main {
     public Main() {
-        CONFIG_FILE = new File("config/main.yml");
-
         DynMap.add(new Dynmap());
     }
 

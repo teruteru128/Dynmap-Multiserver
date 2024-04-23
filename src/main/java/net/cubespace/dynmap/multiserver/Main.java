@@ -1,6 +1,5 @@
 package net.cubespace.dynmap.multiserver;
 
-import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.dynmap.multiserver.Config.ConfigFactory;
 import net.cubespace.dynmap.multiserver.Config.Dynmap;
 import net.cubespace.dynmap.multiserver.GSON.ComponentDeserializer;
@@ -33,16 +32,10 @@ public class Main {
 
         //Init the Config
         logger.info("Getting the config...");
-        net.cubespace.dynmap.multiserver.Config.Main config = new net.cubespace.dynmap.multiserver.Config.Main();
-        try {
-            config.init();
-        } catch (InvalidConfigurationException e) {
-            logger.error("Could not init config", e);
-            System.exit(-1);
-        }
+        net.cubespace.dynmap.multiserver.Config.Main config = null;
         try {
             config = ConfigFactory.getConfig();
-        } catch(IOException e){
+        } catch(IOException e) {
             logger.error("IO Exception on get config", e);
             System.exit(1);
         }
