@@ -1,6 +1,7 @@
 package net.cubespace.dynmap.multiserver;
 
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
+import net.cubespace.dynmap.multiserver.Config.ConfigFactory;
 import net.cubespace.dynmap.multiserver.Config.Dynmap;
 import net.cubespace.dynmap.multiserver.GSON.ComponentDeserializer;
 import net.cubespace.dynmap.multiserver.GSON.Components.*;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class Main {
-    static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     private static ArrayList<DynmapServer> dynmapServers = new ArrayList<>();
     private static String dynmapVersion;
@@ -38,7 +40,12 @@ public class Main {
             logger.error("Could not init config", e);
             System.exit(-1);
         }
-
+        try {
+            config = ConfigFactory.getConfig();
+        } catch(IOException e){
+            logger.error("IO Exception on get config", e);
+            System.exit(1);
+        }
         //Normalize the WebPath
         File file = new File(System.getProperty("user.dir"), config.Webserver_webDir);
 
