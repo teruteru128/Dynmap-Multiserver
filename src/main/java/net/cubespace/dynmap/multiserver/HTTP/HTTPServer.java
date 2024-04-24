@@ -37,7 +37,7 @@ public class HTTPServer implements Runnable {
                     .childHandler(new HTTPServerInitializer(config));
 
             b.bind(ip, port).sync().channel().closeFuture().sync();
-            logger.info("Bound to " + ip + ":" + port);
+			logger.info("Bound to {}:{}", ip, port);
         } catch (InterruptedException e) {
             logger.error("Could not bind to that IP", e);
             System.exit(-1);

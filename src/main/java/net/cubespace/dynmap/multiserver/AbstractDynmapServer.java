@@ -97,7 +97,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
 
     private void loadWorlds() throws DynmapInitException {
         for (DynmapWorld world : dynmapConfig.getWorlds()) {
-            logger.info("Checking World " + world.getName());
+			logger.debug("Checking World {}", world.getName());
 
             AbstractFile dynmapWorldConfig = null;
             try {
@@ -115,7 +115,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
                     DynmapWorldConfig dynmapWorldConfig1 = gson.fromJson(reader, DynmapWorldConfig.class);
                     dynmapWorldConfigs.put(world.getName(), dynmapWorldConfig1);
 
-                    logger.info("Loaded World " + world.getName());
+					logger.debug("Loaded World {}", world.getName());
                 } catch(JsonSyntaxException e) {
                     logger.error("JsonSyntaxException "+ dynmapWorldConfig.getName() + " has broken", e);
                     throw e;
