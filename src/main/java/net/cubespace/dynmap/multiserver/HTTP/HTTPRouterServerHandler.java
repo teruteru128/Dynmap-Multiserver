@@ -46,9 +46,4 @@ public class HTTPRouterServerHandler extends ChannelHandlerAdapter {
         }
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        ctx.close();
-    }
 }
