@@ -2,6 +2,7 @@ package net.cubespace.dynmap.multiserver;
 
 import net.cubespace.dynmap.multiserver.Config.ConfigFactory;
 import net.cubespace.dynmap.multiserver.Config.Dynmap;
+import net.cubespace.dynmap.multiserver.Config.ServerConfig;
 import net.cubespace.dynmap.multiserver.GSON.ComponentDeserializer;
 import net.cubespace.dynmap.multiserver.GSON.Components.*;
 import net.cubespace.dynmap.multiserver.GSON.Player;
@@ -32,7 +33,7 @@ public class Main {
 
         //Init the Config
         logger.info("Getting the config...");
-        net.cubespace.dynmap.multiserver.Config.Main config = null;
+        ServerConfig config = null;
         try {
             config = ConfigFactory.getConfig();
         } catch(IOException e) {

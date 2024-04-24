@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import net.cubespace.dynmap.multiserver.Config.Main;
+import net.cubespace.dynmap.multiserver.Config.ServerConfig;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.ConfigJSHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.DynmapConfigJSONHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.FacesFileHandler;
@@ -21,9 +21,9 @@ import net.cubespace.dynmap.multiserver.HTTP.Handler.TileFileHandler;
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
-    private Main config;
+    private ServerConfig config;
 
-    public HTTPServerInitializer(Main config) {
+    public HTTPServerInitializer(ServerConfig config) {
         super();
 
         this.config = config;

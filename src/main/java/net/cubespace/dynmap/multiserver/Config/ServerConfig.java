@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
-public class Main {
-    public Main() {
+public class ServerConfig {
+    public ServerConfig() {
         DynMap.add(new Dynmap());
     }
 

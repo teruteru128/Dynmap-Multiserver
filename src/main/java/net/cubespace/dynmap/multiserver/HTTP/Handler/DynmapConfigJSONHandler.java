@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import net.cubespace.dynmap.multiserver.Config.Main;
+import net.cubespace.dynmap.multiserver.Config.ServerConfig;
 import net.cubespace.dynmap.multiserver.DynmapServer;
 import net.cubespace.dynmap.multiserver.GSON.Component;
 import net.cubespace.dynmap.multiserver.GSON.DynmapConfig;
@@ -57,7 +57,7 @@ public class DynmapConfigJSONHandler implements IHandler {
         }
     }
 
-    public DynmapConfigJSONHandler(Main mainConfig) {
+    public DynmapConfigJSONHandler(ServerConfig serverConfig) {
         if (gson == null) gson = new Gson();
 
         if (config == null) {
@@ -65,7 +65,7 @@ public class DynmapConfigJSONHandler implements IHandler {
             config.setDefaultmap("flat");
             config.setDefaultworld("world");
             config.setConfighash(0);
-            config.setTitle(mainConfig.Webserver_Title);
+            config.setTitle(serverConfig.Webserver_Title);
 
             responseStr = gson.toJson(config);
         }

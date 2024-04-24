@@ -4,7 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import net.cubespace.dynmap.multiserver.Config.Main;
+import net.cubespace.dynmap.multiserver.Config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +15,10 @@ public class HTTPServer extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServer.class);
     private final String ip;
     private final int port;
-    private final Main config;
+    private final ServerConfig config;
     private final int workerThreads;
 
-    public HTTPServer(Main config) {
+    public HTTPServer(ServerConfig config) {
         this.ip = config.Webserver_IP;
         this.port = config.Webserver_Port;
         this.workerThreads = config.Webserver_WorkerThreads;
