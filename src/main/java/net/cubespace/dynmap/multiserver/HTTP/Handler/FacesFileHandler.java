@@ -8,8 +8,6 @@ import net.cubespace.dynmap.multiserver.HTTP.HandlerUtil;
 import net.cubespace.dynmap.multiserver.Main;
 import net.cubespace.dynmap.multiserver.util.AbstractFile;
 
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -55,8 +53,6 @@ public class FacesFileHandler implements IHandler {
                     }
                 }
 
-                ReadableByteChannel channel = Channels.newChannel(file.getInputStream());
-
                 HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
 
                 HandlerUtil.setContentTypeHeader(response, file.getName());
@@ -70,7 +66,9 @@ public class FacesFileHandler implements IHandler {
                 ctx.write(response);
 
                 // Write the content.
-                ctx.write(new ChunkedStream(file.getInputStream()));
+                try(var inputStream = file.getInputStream()) {
+                    ctx.write(new ChunkedStream(inputStream));
+                }
                 ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
                 return;
             }

@@ -6,8 +6,8 @@ import io.netty.handler.codec.http.*;
 import net.cubespace.dynmap.multiserver.HTTP.HandlerUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,16 +77,7 @@ public class StaticFileHandler implements IHandler {
             }
         }
 
-        RandomAccessFile raf;
-        try {
-            // FIXME resource leak?
-            raf = new RandomAccessFile(file, "r");
-        } catch (FileNotFoundException fnfe) {
-            HandlerUtil.sendError(ctx, NOT_FOUND);
-            return;
-        }
-
-        long fileLength = raf.length();
+        var fileLength = Files.size(file.toPath());
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
 
@@ -101,7 +92,9 @@ public class StaticFileHandler implements IHandler {
         ctx.write(response);
 
         // Write the content.
-        ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength));
+        try(var channel = FileChannel.open(file.toPath())) {
+            ctx.write(new DefaultFileRegion(channel, 0, fileLength));
+        }
         ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
     }
 
