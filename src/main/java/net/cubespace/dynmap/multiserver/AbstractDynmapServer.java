@@ -117,7 +117,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
 
 					logger.debug("Loaded World {}", world.getName());
                 } catch(JsonSyntaxException e) {
-                    logger.error("JsonSyntaxException "+ dynmapWorldConfig.getName() + " has broken", e);
+					logger.error("JsonSyntaxException {} has broken", dynmapWorldConfig.getName(), e);
                     throw e;
                 } catch (FileNotFoundException e) {
                     logger.error("Error in reading in the Worldfile", e);

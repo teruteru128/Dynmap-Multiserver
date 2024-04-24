@@ -4,6 +4,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.IHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +23,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.METHOD_NOT_ALLOWED;
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class HTTPServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+    private static final Logger logger = LoggerFactory.getLogger(HTTPServerHandler.class);
     private HashMap<String, IHandler> handlers = new LinkedHashMap<>();
 
     @Override
@@ -63,7 +66,7 @@ public class HTTPServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        logger.error("caught exception in HTTPServerHandler", cause);
         if (ctx.channel().isActive()) {
             HandlerUtil.sendError(ctx, INTERNAL_SERVER_ERROR);
         }

@@ -28,8 +28,8 @@ public class Main {
     public static void main(String[] args) {
         //Init the Logger
         logger.info("Booting up Dynmap-MultiServer v0.5.0");
-        logger.info("Running on Java Version: " + System.getProperty("java.version") + " " + System.getProperty("os.arch"));
-        logger.info("Running on OS: " + System.getProperty("os.name"));
+		logger.info("Running on Java Version: {} {}", System.getProperty("java.version"), System.getProperty("os.arch"));
+		logger.info("Running on OS: {}", System.getProperty("os.name"));
 
         //Init the Config
         logger.info("Getting the config...");
@@ -50,7 +50,7 @@ public class Main {
             System.exit(-1);
         }
 
-        logger.info("Config holds Information for " + config.DynMap.size() + " DynMap(s)");
+		logger.info("Config holds Information for {} DynMap(s)", config.DynMap.size());
 
         //Register all Components
         ComponentDeserializer.addComponent(new Spawn());
@@ -66,7 +66,7 @@ public class Main {
         logger.info("Loading the Dynmaps");
 
         for (Dynmap dynmap : config.DynMap) {
-            logger.info("Booting up Dynmap " + dynmap.Folder);
+			logger.info("Booting up Dynmap {}", dynmap.Folder);
 
             try {
                 DynmapServer dynmapServer;
