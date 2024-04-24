@@ -23,16 +23,16 @@ public class ConfigFactory {
             Files.createDirectories(filePath.getParent());
             // save initial config file
             var config = new Main();
-            try(var writer = Files.newBufferedWriter(filePath)) {
-                mapper.writeValue(writer, config);
+            try(var outputStream = Files.newOutputStream(filePath)) {
+                mapper.writeValue(outputStream, config);
             }
             return config;
         }
     }
 
     public static Main load(Path filePath) throws IOException {
-        try(var reader = Files.newBufferedReader(filePath)) {
-            return mapper.readValue(reader, Main.class);
+        try(var inputStream = Files.newInputStream(filePath)) {
+            return mapper.readValue(inputStream, Main.class);
         }
     }
 }
