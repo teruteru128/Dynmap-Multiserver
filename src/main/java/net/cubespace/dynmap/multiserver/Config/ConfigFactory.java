@@ -6,33 +6,32 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author teruteru128 (teruterubouzu1024+dynmap@gmail.com)
  */
 public class ConfigFactory {
-    private static final Path FILE_PATH = Paths.get("config/main.yml");
     private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     public static Main getConfig() throws IOException {
-        if (Files.exists(FILE_PATH)) {
+        final var filePath = Path.of("").resolve("config/main.yml");
+        if (Files.exists(filePath)) {
             // load
-            return load();
+            return load(filePath);
         } else {
             // create directory
-            Files.createDirectories(FILE_PATH.getParent());
+            Files.createDirectories(filePath.getParent());
             // save initial config file
             var config = new Main();
-            try(var writer = Files.newBufferedWriter(FILE_PATH)) {
+            try(var writer = Files.newBufferedWriter(filePath)) {
                 mapper.writeValue(writer, config);
             }
             return config;
         }
     }
 
-    public static Main load() throws IOException {
-        try(var reader = Files.newBufferedReader(FILE_PATH)) {
+    public static Main load(Path filePath) throws IOException {
+        try(var reader = Files.newBufferedReader(filePath)) {
             return mapper.readValue(reader, Main.class);
         }
     }
