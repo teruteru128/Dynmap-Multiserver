@@ -59,8 +59,6 @@ public abstract class AbstractDynmapServer implements DynmapServer {
                                 players.add(player);
                             }
                         }
-                    } catch (FileNotFoundException e) {
-                        logger.warn("Could not update Dynmap World", e);
                     } catch (IOException e) {
                         logger.warn("Could not update Dynmap World", e);
                     }
