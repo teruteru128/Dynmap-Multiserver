@@ -6,6 +6,6 @@ package net.cubespace.dynmap.multiserver.Config;
  */
 public class Dynmap {
     public String Folder = "test";
-    public String Url = "";
+    public String Url = null;
     public Integer UpdateInterval = 1;
 }
