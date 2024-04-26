@@ -92,10 +92,8 @@ public class StaticFileHandler implements IHandler {
         ctx.write(response);
 
         // Write the content.
-        try(var channel = FileChannel.open(file.toPath())) {
-            ctx.write(new DefaultFileRegion(channel, 0, fileLength));
-        }
-        ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+		ctx.write(new DefaultFileRegion(FileChannel.open(file.toPath()), 0, fileLength));
+		ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
     }
 
     public void addIndex(String file) {

@@ -66,10 +66,8 @@ public class FacesFileHandler implements IHandler {
                 ctx.write(response);
 
                 // Write the content.
-                try(var inputStream = file.getInputStream()) {
-                    ctx.write(new ChunkedStream(inputStream));
-                }
-                ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+				ctx.write(new ChunkedStream(file.getInputStream()));
+				ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
                 return;
             }
         }
