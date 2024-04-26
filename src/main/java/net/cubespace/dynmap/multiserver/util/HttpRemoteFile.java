@@ -109,4 +109,11 @@ public class HttpRemoteFile implements AbstractFile {
         String[] parts = url.split("/");
         return parts[parts.length - 1];
     }
+
+    @Override
+    public String toString() {
+        return "HttpRemoteFile{" +
+                "url='" + url + '\'' +
+                '}';
+    }
 }

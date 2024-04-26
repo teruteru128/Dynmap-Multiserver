@@ -46,4 +46,11 @@ public class LocalFile implements AbstractFile {
     public String getName() {
         return file.getName();
     }
+
+    @Override
+    public String toString() {
+        return "LocalFile{" +
+                "file=" + file +
+                '}';
+    }
 }

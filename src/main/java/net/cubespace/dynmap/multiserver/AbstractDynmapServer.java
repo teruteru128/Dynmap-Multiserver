@@ -149,6 +149,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
         } catch (IOException e) {
             throw new DynmapInitException(e);
         }
+        logger.debug("dynmapConfigFile is {}", dynmapConfigFile);
 
         if (!dynmapConfigFile.exists()) {
             try {

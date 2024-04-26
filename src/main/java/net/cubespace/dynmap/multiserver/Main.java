@@ -67,6 +67,7 @@ public class Main {
 
         for (Dynmap dynmap : config.DynMap) {
 			logger.info("Booting up Dynmap {}", dynmap.Folder);
+			logger.debug("Dynmap url is {}", dynmap.Url);
 
             try {
                 DynmapServer dynmapServer;
@@ -75,6 +76,7 @@ public class Main {
                 } else {
                     dynmapServer = new LocalDynmapServer(dynmap);
                 }
+                logger.debug("dynmapServer is {}", dynmapServer.getClass());
                 dynmapServer.initialize();
                 dynmapServers.add(dynmapServer);
             } catch (DynmapInitException e) {
@@ -104,7 +106,7 @@ public class Main {
     public static synchronized void updateCoreVersion(String coreVersion) {
         if (Main.coreVersion != null) {
             if (!Main.coreVersion.equals(coreVersion)) {
-                logger.error("You use different Versions of Dynmaps");
+                logger.error("You use different Versions of Dynmaps: {}", coreVersion);
                 System.exit(-1);
             }
         } else {
@@ -115,7 +117,7 @@ public class Main {
     public static synchronized void updateDynmapVersion(String dynmapVersion) {
         if (Main.dynmapVersion != null) {
             if (!Main.dynmapVersion.equals(dynmapVersion)) {
-                logger.error("You use different Versions of Dynmaps");
+                logger.error("You use different Versions of Dynmaps: {}", dynmapVersion);
                 System.exit(-1);
             }
         } else {
