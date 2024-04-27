@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,10 @@ public class Main {
         logger.info("Booting up Dynmap-MultiServer v0.5.0");
 		logger.info("Running on Java Version: {} {}", System.getProperty("java.version"), System.getProperty("os.arch"));
 		logger.info("Running on OS: {}", System.getProperty("os.name"));
+        logger.trace("System.getProperty(\"native.encoding\")=\"{}\"", System.getProperty("native.encoding"));
+        logger.trace("System.getProperty(\"stdout.encoding\")=\"{}\"", System.getProperty("stdout.encoding"));
+        logger.trace("System.getProperty(\"stderr.encoding\")=\"{}\"", System.getProperty("stderr.encoding"));
+        logger.trace("Charset.defaultCharset().displayName()=\"{}\"", Charset.defaultCharset().displayName());
 
         //Init the Config
         logger.info("Getting the config...");
