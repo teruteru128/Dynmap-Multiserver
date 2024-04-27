@@ -4,7 +4,7 @@
         <Console name="sysout" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
         </Console>
-        <RollingFile name="file" fileName="logs/log.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.log.gz">
+        <RollingFile name="file" fileName="logs/log.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
