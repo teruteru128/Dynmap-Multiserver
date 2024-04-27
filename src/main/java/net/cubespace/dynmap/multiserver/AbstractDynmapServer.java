@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public abstract class AbstractDynmapServer implements DynmapServer {
-    static Logger logger = LoggerFactory.getLogger(AbstractDynmapServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDynmapServer.class);
     private final Integer updateInterval;
     private final Gson gson = new Gson();
     private DynmapConfig dynmapConfig;

@@ -34,7 +34,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class DynmapConfigJSONHandler implements IHandler {
-    static Logger logger = LoggerFactory.getLogger(DynmapConfigJSONHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DynmapConfigJSONHandler.class);
 
     private static final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1, r -> {
         var t = new Thread(r);
