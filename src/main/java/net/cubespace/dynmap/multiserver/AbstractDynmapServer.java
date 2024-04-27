@@ -140,7 +140,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
         try {
             dynmapConfigFile = getFile("standalone/dynmap_config.json");
         } catch (IOException e) {
-            throw new DynmapInitException(e);
+            throw new DynmapInitException("Fail get config file", e);
         }
         logger.debug("dynmapConfigFile is {}", dynmapConfigFile);
 
