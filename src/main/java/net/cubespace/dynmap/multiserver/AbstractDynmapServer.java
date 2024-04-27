@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
@@ -23,52 +26,45 @@ public abstract class AbstractDynmapServer implements DynmapServer {
     private DynmapConfig dynmapConfig;
 
     //This dynmaps worlds
-    private HashMap<String, DynmapWorldConfig> dynmapWorldConfigs = new HashMap<>();
+    private final HashMap<String, DynmapWorldConfig> dynmapWorldConfigs = new HashMap<>();
 
-    private ArrayList<String> alreadyPlayers = new ArrayList<>();
-    private List<Player> players = new ArrayList<>();
+    private final ArrayList<String> alreadyPlayers = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
+	private final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1, r -> {
+		var t = new Thread(r);
+		t.setDaemon(true);
+		return t;
+	});
     private AbstractFile dynmapConfigFile;
 
-    private class DynmapServerUpdater extends Thread {
-        private int updateInterval;
+    private class DynmapServerUpdater implements Runnable {
 
-        public DynmapServerUpdater(Integer updateInterval) {
-            this.updateInterval = updateInterval;
-            setName("DynmaServerUpdater-" + dynmapConfig.getTitle());
+        public DynmapServerUpdater() {
         }
 
         public void run() {
-            while (true) {
-                try {
-                    loadWorlds();
-                } catch (DynmapInitException e) {
-                    logger.warn("Error in getting new Worlds", e);
-                }
+            try {
+                loadWorlds();
+            } catch (DynmapInitException e) {
+                logger.warn("Error in getting new Worlds", e);
+            }
 
-                players = new ArrayList<>();
-                alreadyPlayers = new ArrayList<>();
+            players.clear();
+            alreadyPlayers.clear();
 
-                for (Map.Entry<String, DynmapWorldConfig> dynmapWorldConfig : new HashMap<>(dynmapWorldConfigs).entrySet()) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(getFile("standalone" + File.separator + "dynmap_" + dynmapWorldConfig.getKey() + ".json").getInputStream()))) {
-                        dynmapWorldConfig.setValue(gson.fromJson(reader, DynmapWorldConfig.class));
-                        dynmapWorldConfigs.put(dynmapWorldConfig.getKey(), dynmapWorldConfig.getValue());
+            for (Map.Entry<String, DynmapWorldConfig> dynmapWorldConfig : new HashMap<>(dynmapWorldConfigs).entrySet()) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(getFile("standalone" + File.separator + "dynmap_" + dynmapWorldConfig.getKey() + ".json").getInputStream()))) {
+                    dynmapWorldConfig.setValue(gson.fromJson(reader, DynmapWorldConfig.class));
+                    dynmapWorldConfigs.put(dynmapWorldConfig.getKey(), dynmapWorldConfig.getValue());
 
-                        for (Player player : dynmapWorldConfig.getValue().getPlayers()) {
-                            if (!alreadyPlayers.contains(player.getName())) {
-                                alreadyPlayers.add(player.getName());
-                                players.add(player);
-                            }
+                    for (Player player : dynmapWorldConfig.getValue().getPlayers()) {
+                        if (!alreadyPlayers.contains(player.getName())) {
+                            alreadyPlayers.add(player.getName());
+                            players.add(player);
                         }
-                    } catch (IOException e) {
-                        logger.warn("Could not update Dynmap World", e);
                     }
-                }
-
-                try {
-                    Thread.sleep(updateInterval * 1000);
-                } catch (InterruptedException e) {
-                    logger.warn("Interrupted", e);
-                    return;
+                } catch (IOException e) {
+                    logger.warn("Could not update Dynmap World", e);
                 }
             }
         }
@@ -89,8 +85,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
         //Check if all Worlds in the Config are there
         loadWorlds();
 
-        DynmapServerUpdater dynmapServerUpdater = new DynmapServerUpdater(updateInterval);
-        dynmapServerUpdater.start();
+        service.scheduleWithFixedDelay(new DynmapServerUpdater(), 0, updateInterval, TimeUnit.SECONDS);
     }
 
     private void loadWorlds() throws DynmapInitException {

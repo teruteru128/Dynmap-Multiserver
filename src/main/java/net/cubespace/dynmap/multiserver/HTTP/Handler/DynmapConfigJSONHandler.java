@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
 import static io.netty.handler.codec.http.HttpHeaderValues.*;
@@ -33,49 +36,30 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class DynmapConfigJSONHandler implements IHandler {
     static Logger logger = LoggerFactory.getLogger(DynmapConfigJSONHandler.class);
 
-    private static DynmapConfigJSONUpdater dynmapConfigJSONUpdater;
+    private static final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1, r -> {
+        var t = new Thread(r);
+        t.setDaemon(true);
+        return t;
+    });
 
     private static String responseStr;
-    private static DynmapConfig config;
-    private static Gson gson;
-    private static long start = 0;
+    private static final DynmapConfig config = new DynmapConfig();
+    private static final Gson gson = new Gson();
+    private static long start = System.currentTimeMillis();
 
-    private class DynmapConfigJSONUpdater extends Thread {
-        public DynmapConfigJSONUpdater() {
-            setName("DynmapConfigJSONUpdater");
-        }
-
-        public void run() {
-            while (true) {
-                try {
-                    updateJson();
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    static {
+		config.setDefaultmap("flat");
+        config.setDefaultworld("world");
+        config.setConfighash(0);
+        responseStr = gson.toJson(config);
     }
 
     public DynmapConfigJSONHandler(ServerConfig serverConfig) {
-        if (gson == null) gson = new Gson();
+        logger.debug("Entering DynmapConfigJSONHandler:<init>(ServerConfig)");
 
-        if (config == null) {
-            config = new DynmapConfig();
-            config.setDefaultmap("flat");
-            config.setDefaultworld("world");
-            config.setConfighash(0);
-            config.setTitle(serverConfig.Webserver_Title);
+        config.setTitle(serverConfig.Webserver_Title);
 
-            responseStr = gson.toJson(config);
-        }
-
-        if (start == 0) start = System.currentTimeMillis();
-
-        if (dynmapConfigJSONUpdater == null) {
-            dynmapConfigJSONUpdater = new DynmapConfigJSONUpdater();
-            dynmapConfigJSONUpdater.start();
-        }
+        service.scheduleWithFixedDelay(this::updateJson, 0, 1, TimeUnit.SECONDS);
     }
 
     private void updateJson() {
