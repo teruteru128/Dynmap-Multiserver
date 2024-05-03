@@ -18,7 +18,7 @@ import net.cubespace.dynmap.multiserver.HTTP.Handler.MarkerHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.StaticFileHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.TileFileHandler;
 
-import javax.net.ssl.KeyManager;
+import java.io.File;
 
 
 /**
@@ -39,7 +39,7 @@ public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
 
         if (config.Webserver_EnableSsl) {
-            var context = SslContextBuilder.forServer((KeyManager) null).build();
+            var context = SslContextBuilder.forServer(new File(config.Webserver_PrivateKeyFile), new File(config.Webserver_CertificateFile), config.Webserver_TlsPassword).build();
             pipeline.addFirst("ssl", new SslHandler(context.newEngine(ch.alloc())));
         }
         pipeline.addLast("decoder", new HttpRequestDecoder());

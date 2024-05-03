@@ -16,5 +16,8 @@ public class ServerConfig {
     public String Webserver_Title = "Awesome Multiserver Dynmap";
     public Integer Webserver_WorkerThreads = 16;
     public boolean Webserver_EnableSsl = false;
+    public String Webserver_CertificateFile = null;
+    public String Webserver_PrivateKeyFile = null;
+    public String Webserver_TlsPassword = null;
     public ArrayList<Dynmap> DynMap = new ArrayList<>();
 }
