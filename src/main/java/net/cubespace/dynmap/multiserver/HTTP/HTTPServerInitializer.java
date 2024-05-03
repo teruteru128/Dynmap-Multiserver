@@ -6,6 +6,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import net.cubespace.dynmap.multiserver.Config.ServerConfig;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.ConfigJSHandler;
@@ -16,12 +18,14 @@ import net.cubespace.dynmap.multiserver.HTTP.Handler.MarkerHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.StaticFileHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.TileFileHandler;
 
+import javax.net.ssl.KeyManager;
+
 
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
-    private ServerConfig config;
+    private final ServerConfig config;
 
     public HTTPServerInitializer(ServerConfig config) {
         super();
@@ -34,6 +38,10 @@ public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = ch.pipeline();
 
+        if (config.Webserver_EnableSsl) {
+            var context = SslContextBuilder.forServer((KeyManager) null).build();
+            pipeline.addFirst("ssl", new SslHandler(context.newEngine(ch.alloc())));
+        }
         pipeline.addLast("decoder", new HttpRequestDecoder());
         pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
         pipeline.addLast("encoder", new HttpResponseEncoder());

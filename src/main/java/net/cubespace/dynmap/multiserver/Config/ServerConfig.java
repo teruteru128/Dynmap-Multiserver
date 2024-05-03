@@ -15,5 +15,6 @@ public class ServerConfig {
     public String Webserver_webDir = "web/";
     public String Webserver_Title = "Awesome Multiserver Dynmap";
     public Integer Webserver_WorkerThreads = 16;
+    public boolean Webserver_EnableSsl = false;
     public ArrayList<Dynmap> DynMap = new ArrayList<>();
 }
