@@ -90,7 +90,7 @@ public abstract class AbstractDynmapServer implements DynmapServer {
 
     private void loadWorlds() throws DynmapInitException {
         for (DynmapWorld world : dynmapConfig.getWorlds()) {
-			logger.debug("Checking World {}", world.getName());
+			logger.trace("Checking World {}", world.getName());
 
             AbstractFile dynmapWorldConfig = null;
             try {

@@ -17,15 +17,46 @@ import net.cubespace.dynmap.multiserver.HTTP.Handler.MapConfigHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.MarkerHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.StaticFileHandler;
 import net.cubespace.dynmap.multiserver.HTTP.Handler.TileFileHandler;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyFactory;
+import java.security.Provider;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
  * @author geNAZt (fabian.fassbender42@googlemail.com)
  */
 public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
+    private static final Logger logger = LoggerFactory.getLogger(HTTPServerInitializer.class);
     private final ServerConfig config;
+
+    static {
+        try {
+            if (Security.getProvider("BC") == null) {
+                var clazz = Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
+                var subclass = clazz.asSubclass(Provider.class);
+                var constructor = subclass.getConstructor();
+                var provider = constructor.newInstance();
+                Security.addProvider(provider);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 IllegalArgumentException | InvocationTargetException | SecurityException e) {
+            throw new InternalError(e);
+        }
+    }
 
     public HTTPServerInitializer(ServerConfig config) {
         super();
@@ -33,13 +64,33 @@ public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
         this.config = config;
     }
 
+    private static final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = ch.pipeline();
 
-        if (config.Webserver_EnableSsl) {
-            var context = SslContextBuilder.forServer(new File(config.Webserver_PrivateKeyFile), new File(config.Webserver_CertificateFile), config.Webserver_TlsPassword).build();
+        if (config.Webserver_EnableTls) {
+            if (config.Webserver_TlsPassword == null) {
+                logger.debug("config.Webserver_TlsPassword is null");
+            } else {
+                logger.debug("config.Webserver_TlsPassword={}", config.Webserver_TlsPassword);
+            }
+            var certFactory = CertificateFactory.getInstance("X.509");
+            Collection<? extends Certificate> certs;
+            try(var in = Files.newInputStream(Path.of(config.Webserver_CertificateFile))) {
+                certs = certFactory.generateCertificates(in);
+            }
+            var certs2 = new ArrayList<X509Certificate>();
+            for (var c : certs) {
+                if (c instanceof X509Certificate x) {
+                    certs2.add(x);
+                }
+            }
+            var factory = KeyFactory.getInstance("EC");
+            var pk = factory.generatePrivate(new PKCS8EncodedKeySpec(Files.readAllBytes(Path.of(config.Webserver_PrivateKeyFile))));
+            var context = SslContextBuilder.forServer(new File(config.Webserver_CertificateFile), new File(config.Webserver_PrivateKeyFile), config.Webserver_TlsPassword).build();
             pipeline.addFirst("ssl", new SslHandler(context.newEngine(ch.alloc())));
         }
         pipeline.addLast("decoder", new HttpRequestDecoder());
