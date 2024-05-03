@@ -13,22 +13,16 @@ import org.slf4j.LoggerFactory;
  */
 public class HTTPServer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServer.class);
-    private final String ip;
-    private final int port;
     private final ServerConfig config;
-    private final int workerThreads;
 
     public HTTPServer(ServerConfig config) {
-        this.ip = config.Webserver_IP;
-        this.port = config.Webserver_Port;
-        this.workerThreads = config.Webserver_WorkerThreads;
         this.config = config;
     }
 
     @Override
     public void run() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup(workerThreads);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(config.Webserver_WorkerThreads);
 
         try {
             ServerBootstrap b = new ServerBootstrap();
@@ -36,8 +30,8 @@ public class HTTPServer implements Runnable {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new HTTPServerInitializer(config));
 
-            b.bind(ip, port).sync().channel().closeFuture().sync();
-			logger.info("Bound to {}:{}", ip, port);
+            logger.info("Bounding to {}:{}", config.Webserver_IP, config.Webserver_Port);
+            b.bind(config.Webserver_IP, config.Webserver_Port).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error("Could not bind to that IP", e);
             System.exit(-1);
