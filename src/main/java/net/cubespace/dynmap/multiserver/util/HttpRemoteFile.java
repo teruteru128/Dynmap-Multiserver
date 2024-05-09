@@ -3,6 +3,8 @@ package net.cubespace.dynmap.multiserver.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class HttpRemoteFile implements AbstractFile {
@@ -12,10 +14,10 @@ public class HttpRemoteFile implements AbstractFile {
     private final long lastModified;
     private final HttpURLConnection connection;
 
-    public HttpRemoteFile(String url) throws IOException {
+    public HttpRemoteFile(String url) throws IOException, URISyntaxException {
         this.url = url;
 
-        URL obj = new URL(url);
+        URL obj = new URI(url).toURL();
         connection = (HttpURLConnection) obj.openConnection();
         connection.setRequestMethod("GET");
         int responseCode = connection.getResponseCode();
