@@ -10,30 +10,14 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import net.cubespace.dynmap.multiserver.Config.ServerConfig;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.ConfigJSHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.DynmapConfigJSONHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.FacesFileHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.MapConfigHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.MarkerHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.StaticFileHandler;
-import net.cubespace.dynmap.multiserver.HTTP.Handler.TileFileHandler;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import net.cubespace.dynmap.multiserver.HTTP.Handler.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.KeyFactory;
 import java.security.Provider;
 import java.security.Security;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**
@@ -64,8 +48,6 @@ public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
         this.config = config;
     }
 
-    private static final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
-
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         // Create a default pipeline implementation.
@@ -77,19 +59,6 @@ public class HTTPServerInitializer extends ChannelInitializer<SocketChannel> {
             } else {
                 logger.debug("config.Webserver_TlsPassword={}", config.Webserver_TlsPassword);
             }
-            var certFactory = CertificateFactory.getInstance("X.509");
-            Collection<? extends Certificate> certs;
-            try(var in = Files.newInputStream(Path.of(config.Webserver_CertificateFile))) {
-                certs = certFactory.generateCertificates(in);
-            }
-            var certs2 = new ArrayList<X509Certificate>();
-            for (var c : certs) {
-                if (c instanceof X509Certificate x) {
-                    certs2.add(x);
-                }
-            }
-            var factory = KeyFactory.getInstance("EC");
-            var pk = factory.generatePrivate(new PKCS8EncodedKeySpec(Files.readAllBytes(Path.of(config.Webserver_PrivateKeyFile))));
             var context = SslContextBuilder.forServer(new File(config.Webserver_CertificateFile), new File(config.Webserver_PrivateKeyFile), config.Webserver_TlsPassword).build();
             pipeline.addFirst("ssl", new SslHandler(context.newEngine(ch.alloc())));
         }
