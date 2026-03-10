@@ -5,7 +5,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'maven-publish'
 }
 
@@ -46,10 +45,6 @@ java {
 
 application {
     mainClass = 'net.cubespace.dynmap.multiserver.Main'
-}
-
-shadowJar {
-    archiveClassifier = 'shade'
 }
 
 publishing {
