@@ -33,8 +33,9 @@ jobs:
           java-version: '17'
           # Java distribution. See the list of supported distributions in README file
           distribution: 'temurin'
-        # You may pin to the exact commit or the version.
-      - uses: gradle/actions/wrapper-validation@v6
+      - name: Gradle Wrapper Validation
+      # You may pin to the exact commit or the version.
+        uses: gradle/actions/wrapper-validation@v5
 	  - name: Setup Gradle
         # You may pin to the exact commit or the version.
         # uses: gradle/gradle-build-action@996094e8e808208e5738e8413b3f55d24d1c1eb7
