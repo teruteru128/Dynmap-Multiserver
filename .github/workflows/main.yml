@@ -36,7 +36,7 @@ jobs:
 
       - name: Gradle Wrapper Validation
         # You may pin to the exact commit or the version.
-        uses: gradle/actions/wrapper-validation@6
+        uses: gradle/actions/wrapper-validation@v6
  
 	  - name: Setup Gradle
         # You may pin to the exact commit or the version.
