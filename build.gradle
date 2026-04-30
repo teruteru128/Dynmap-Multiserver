@@ -29,7 +29,7 @@ dependencies {
     implementation 'io.netty:netty-all:4.2.12.Final'
     implementation 'commons-lang:commons-lang:20030203.000129'
     implementation 'net.lingala.zip4j:zip4j:2.11.6'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.3'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.bouncycastle:bcpkix-jdk18on:1.84'
 }
